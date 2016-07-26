@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <title>瀑布流</title>
+    <title>英语小铺-照片墙</title>
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -48,12 +48,21 @@
             color: #FFFFFF;
             font-size: 15px;
         }
+
+        #imgDialog{
+            left:20%;
+            position: absolute;
+            z-index:999;
+        }
     </style>
 </head>
 <body>
 <ul id="water_fall">
 
 </ul>
+<div id="imgDialog" style="display: none;" onclick="hideBigImg()">
+    <img id="bigImg" src=""/>
+</div>
 <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
 <script type="text/javascript" src="js/waterfall.js"></script>
 <script type="text/javascript">
@@ -94,9 +103,9 @@
                 return item.pic;
             },
             template: function (imgData) {
-                var domStr = '<a target="_blank" href="'+imgData.link+'">';
-                domStr += '<img src="' + imgData.pic + '">'
-                domStr += '<span>' + imgData.title + '</span>'
+                var domStr = '<a href="javascript:void(0)">';
+                domStr += '<img onclick="openNewWin(\''+imgData.link+'\')" src="' + imgData.pic + '"/>';
+                domStr += '<span onclick="showBigImg(\'' + imgData.pic + '\')">' + imgData.title + '</span>';
                 domStr += '</a>';
                 return domStr;
             },
@@ -108,14 +117,33 @@
                 return res.data.pageIndex >= (res.data.pageCount - 1);
             },
             noMore: function () {
-                alert('没有更多图片');
+                alert('看什么看,没了!');
             }
         });
         window.onscroll = function(){
+            hideBigImg();
             if((clientHeight + window.scrollY) >= $('#water_fall').height())
                 waterfall.loadMore();
         };
     });
+
+    function showBigImg(src){
+        var curObj=$("#water_fall").find("img[src='"+src+"']");
+        $("#imgDialog").show();
+        $("#bigImg").attr("src",src);
+        $("#bigImg").width(curObj.width()*2);
+        $("#bigImg").height(curObj.height()*2);
+        $("#imgDialog").css("top",window.scrollY+"px");
+    }
+
+    function hideBigImg(){
+        $("#imgDialog").hide();
+    }
+
+    function openNewWin(url){
+        window.open(url);
+    }
+
 </script>
 </body>
 </html>
